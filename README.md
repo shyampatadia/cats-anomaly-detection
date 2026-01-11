@@ -151,16 +151,90 @@ Isolation Forest:
 n_estimators=100, contamination=0.038
 ```
 
+## Advanced: Transformer-Based Model
+
+An experimental implementation based on recent research in transformer-based anomaly detection is available in `transformer_paper_implementation.py`.
+
+### Overview
+
+This implementation follows the methodology from "A Transformer-Based Framework for Anomaly Detection in Multivariate Time Series" (Folger et al., CLOUD COMPUTING 2025).
+
+**Key Features:**
+- Vanilla transformer encoder with positional encoding
+- Focal Loss for class imbalance handling
+- Semi-supervised learning (trains on normal data, validates with some anomalies)
+- Optuna hyperparameter optimization
+- Window-based sequence modeling (128 timesteps)
+
+**Target Performance:**
+- ROC-AUC: ~0.999
+- F1 Score: ~0.97
+- Recall: ~0.985
+
+### Usage
+
+Install additional dependencies:
+```bash
+pip install torch>=2.0.0 tqdm>=4.65.0 optuna>=3.0.0
+```
+
+Run the transformer pipeline:
+```bash
+python transformer_paper_implementation.py
+```
+
+Enable hyperparameter optimization:
+```bash
+RUN_OPTUNA=1 python transformer_paper_implementation.py
+```
+
+### Architecture
+
+```
+Input (17 features)
+→ Linear Embedding (to model_dim=128)
+→ Batch Normalization
+→ Positional Encoding
+→ Transformer Encoder (3 layers, 8 heads)
+→ Mean Pooling (temporal aggregation)
+→ Classification Head
+→ Sigmoid → Anomaly Score
+```
+
+### Limitations
+
+1. **Memory intensive**: No sampling optimization, requires sufficient RAM for full dataset
+2. **GPU recommended**: Training can be slow on CPU
+3. **Dataset assumption**: Requires first 1M rows to be anomaly-free for proper training
+4. **Window-level labels**: Uses "ANY" labeling strategy which can be noisy for short anomalies
+5. **No visualizations**: Outputs metrics only, no plots generated
+6. **Longer training**: Takes significantly more time than traditional ML models
+
+### When to Use
+
+Use the transformer model when:
+- Maximum detection accuracy is critical
+- Computational resources (GPU, RAM) are available
+- You have clean separation of normal/anomalous training data
+- Longer training time is acceptable
+
+Use the traditional ensemble when:
+- Fast training and inference are needed
+- Limited computational resources
+- Interpretability is important
+- Good enough performance (97% AUC) is sufficient
+
 ## Project Structure
 
 ```
 cats-anomaly-detection/
-├── cats_pipeline.py      # Main training pipeline
-├── streamlit_dash.py     # Interactive dashboard
-├── requirements.txt      # Python dependencies
-├── data.csv             # CATS dataset (not included)
-├── metadata.csv         # Anomaly metadata (not included)
-├── outputs/             # Generated results
+├── cats_pipeline.py                      # Main training pipeline (traditional ML)
+├── streamlit_dash.py                     # Interactive dashboard
+├── transformer_paper_implementation.py   # Advanced transformer model
+├── requirements.txt                      # Python dependencies
+├── data.csv                             # CATS dataset (not included)
+├── metadata.csv                         # Anomaly metadata (not included)
+├── outputs/                             # Generated results
 └── README.md
 ```
 
@@ -185,3 +259,4 @@ This project is for educational purposes.
 1. Solenix Engineering GmbH. (2023). Controlled Anomalies Time Series (CATS) Dataset Description Document - Version 2.
 2. Breiman, L. (2001). Random Forests. Machine Learning, 45(1), 5-32.
 3. Liu, F. T., Ting, K. M., & Zhou, Z. H. (2008). Isolation Forest. ICDM, 413-422.
+4. Folger et al. (2025). A Transformer-Based Framework for Anomaly Detection in Multivariate Time Series. CLOUD COMPUTING 2025.

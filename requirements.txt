@@ -6,3 +6,8 @@ seaborn>=0.11.0
 plotly>=5.0.0
 streamlit>=1.20.0
 joblib>=1.1.0
+
+# Optional: For transformer-based model (transformer_paper_implementation.py)
+torch>=2.0.0
+tqdm>=4.65.0
+optuna>=3.0.0
