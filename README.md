@@ -11,9 +11,19 @@ The system combines three complementary approaches:
 - **Gradient Boosting**: Sequential learning for complex pattern detection
 - **Isolation Forest**: Unsupervised detection for novel anomaly types
 
+## Applications
+
+This anomaly detection framework applies to:
+- Industrial monitoring systems (sensors, actuators, control systems)
+- Infrastructure health monitoring
+- Cybersecurity (network intrusion detection, system behavior analysis)
+- Financial systems (fraud detection, trading anomalies)
+
+The techniques handle multivariate time series with severe class imbalance (96:4 ratio), making them suitable for rare event detection in operational environments.
+
 ## Dataset
 
-The CATS dataset simulates a complex dynamical system with deliberately injected anomalies.
+The CATS (Controlled Anomalies Time Series) dataset is a benchmark dataset from Solenix Engineering GmbH designed for evaluating anomaly detection algorithms. It simulates a complex dynamical system with deliberately injected anomalies.
 
 **Key Statistics:**
 - Total timestamps: 5,000,000
@@ -223,6 +233,27 @@ Use the traditional ensemble when:
 - Limited computational resources
 - Interpretability is important
 - Good enough performance (97% AUC) is sufficient
+
+## Technical Highlights
+
+**Algorithms:**
+- Random Forest, Gradient Boosting, Isolation Forest (ensemble achieves 0.9712 ROC-AUC)
+- Transformer-based model with Focal Loss (experimental, targeting 0.999 ROC-AUC)
+
+**Data Handling:**
+- Stratified sampling for memory optimization on large datasets
+- Min-Max and Standard scaling for different model requirements
+- Balanced class weights for 96:4 imbalance ratio
+
+**Analysis:**
+- Feature correlation analysis to identify coupled system components
+- Root cause identification through feature importance ranking
+- Threshold optimization for precision-recall trade-offs
+
+**Deployment:**
+- Real-time scoring pipeline with configurable thresholds
+- Interactive dashboard for operational monitoring
+- Model persistence and versioning
 
 ## Project Structure
 
